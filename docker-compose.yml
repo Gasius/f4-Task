@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+        container_name: f4_task
+
+        volumes:
+            - .:/var/www/html
+            - ./storage:/var/www/html/storage
+        ports:
+            - "8000:8000"
+
+        depends_on:
+            - db
+
+        networks:
+            - laravel_network
+    db:
+        image: postgres:13
+        container_name: postgres_db
+        restart: always
+
+        environment:
+            POSTGRES_DB: ${DB_DATABASE}
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+        networks:
+            - laravel_network
+volumes:
+    postgres_data:
+
+networks:
+    laravel_network:
+        driver: bridge
